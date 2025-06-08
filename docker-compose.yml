@@ -1,0 +1,37 @@
+services:
+
+  client-service-database:
+    container_name: client-service-database
+    image: postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB_CLIENT_SERVICE}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - 10000:5432
+    networks:
+      - online-shop-network
+    volumes:
+      - client-service-data:/var/lib/postgresql/client-service-data
+
+  client-service:
+    container_name: client-service
+    build:
+      context: client-service
+      dockerfile: Dockerfile
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB_CLIENT_SERVICE}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - DATASOURCE_URL=${CLIENT_SERVICE_DATASOURCE}
+    ports:
+      - 8080:8080
+    networks:
+      - online-shop-network
+
+networks:
+  online-shop-network:
+    driver: bridge
+
+volumes:
+  client-service-data:
