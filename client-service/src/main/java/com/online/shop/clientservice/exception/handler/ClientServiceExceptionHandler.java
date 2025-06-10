@@ -23,7 +23,7 @@ public class ClientServiceExceptionHandler {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
         problemDetail.setTitle("Client not found");
         problemDetail.setProperty("timestamp", Instant.now());
-        problemDetail.setType(URI.create("/api/v1/clients/{id}"));
+        problemDetail.setType(URI.create("/api/v1/clients"));
         return problemDetail;
     }
 
