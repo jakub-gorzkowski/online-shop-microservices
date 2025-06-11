@@ -38,13 +38,7 @@ public class ClientController {
             @RequestParam(value = "size", defaultValue = "10") @Min(1) @Max(127) Byte size
     ) {
         Page<ClientResponse> clients = clientService.readAllClients(offset, size);
-        Page<ClientResponse> page = new PageImpl<>(
-                clients.stream().toList(),
-                PageRequest.of(offset, size),
-                clients.getSize()
-        );
-
-        return new ResponseEntity<>(page, HttpStatus.OK);
+        return new ResponseEntity<>(clients, HttpStatus.OK);
     }
 
     @GetMapping(path = "/{id}")
