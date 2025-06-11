@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -22,8 +23,16 @@ import java.util.UUID;
 
 import static com.online.shop.clientservice.util.StringConstants.API_URL_V1;
 import static com.online.shop.clientservice.util.StringConstants.API_URL_V1_NO_SLASH;
+import static com.online.shop.clientservice.util.StringConstants.FULL_UPDATE_JSON;
+import static com.online.shop.clientservice.util.StringConstants.INVALID_TYPE_ID;
 import static com.online.shop.clientservice.util.StringConstants.NON_EXISTENT_ID;
+import static com.online.shop.clientservice.util.StringConstants.PARTIAL_UPDATE_JSON;
+import static com.online.shop.clientservice.util.StringConstants.POST_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -67,6 +76,7 @@ public class ClientControllerTest {
     @Nested
     @DisplayName("GET Method Calls")
     class GetMethodCalls {
+
         @Test
         @SneakyThrows
         public void testThatGetClientsReturnsClientsAndHttpStatus200() {
@@ -108,11 +118,77 @@ public class ClientControllerTest {
         @Test
         @SneakyThrows
         public void testThatGetClientByIdForInvalidIdTypeReturnsHttpStatus400() {
-            mockMvc.perform(get(API_URL_V1 + "Q"))
+            mockMvc.perform(get(API_URL_V1 + INVALID_TYPE_ID))
                     .andExpect(jsonPath("$.title").value("Bad request"))
                     .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
-                    .andExpect(jsonPath("$.instance").value(API_URL_V1 + "Q"))
+                    .andExpect(jsonPath("$.instance").value(API_URL_V1 + INVALID_TYPE_ID))
                     .andExpect(status().isBadRequest());
+        }
+    }
+
+    @Nested
+    @DisplayName("POST Method Calls")
+    class PostMethodCalls {
+
+        @Test
+        @SneakyThrows
+        public void testThatPostClientReturnsHttpStatus201() {
+            mockMvc.perform(post(API_URL_V1_NO_SLASH)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(POST_JSON))
+                    .andExpect(jsonPath("$.name").value("John"))
+                    .andExpect(jsonPath("$.surname").value("Smith"))
+                    .andExpect(jsonPath("$.email").value("john.smith@email.com"))
+                    .andExpect(status().isCreated());
+        }
+    }
+
+    @Nested
+    @DisplayName("PUT Method Calls")
+    class PutMethodCalls {
+
+        @Test
+        @SneakyThrows
+        public void testThatPutClientReturnsHttpStatus200() {
+            mockMvc.perform(put(API_URL_V1 + client.getId())
+                    .contentType(MediaType.APPLICATION_JSON)
+                            .content(FULL_UPDATE_JSON))
+                    .andExpect(jsonPath("$.name").value("Dan"))
+                    .andExpect(jsonPath("$.surname").value("Carter"))
+                    .andExpect(jsonPath("$.email").value("dan.carter@email.com"))
+                    .andExpect(jsonPath("$.created_at").value(client.getCreatedAt()))
+                    .andExpect(status().isOk());
+        }
+
+    }
+
+    @Nested
+    @DisplayName("PATCH Method Calls")
+    class PatchMethodCalls {
+
+        @Test
+        @SneakyThrows
+        public void testThatPatchClientReturnsHttpStatus200() {
+            mockMvc.perform(patch(API_URL_V1 + client.getId())
+                    .contentType(MediaType.APPLICATION_JSON)
+                            .content(PARTIAL_UPDATE_JSON))
+                    .andExpect(jsonPath("$.name").value("Andrew"))
+                    .andExpect(jsonPath("$.surname").value("Doe"))
+                    .andExpect(jsonPath("$.email").value("andrew.doe@email.com"))
+                    .andExpect(jsonPath("$.created_at").value(client.getCreatedAt()))
+                    .andExpect(status().isOk());
+        }
+    }
+
+    @Nested
+    @DisplayName("DELETE Method Calls")
+    class DeleteMethodCalls {
+
+        @Test
+        @SneakyThrows
+        public void testThatDeleteClientByIdReturnsHttpStatus204() {
+            mockMvc.perform(delete(API_URL_V1 + client.getId()))
+                    .andExpect(status().isNoContent());
         }
     }
 }
