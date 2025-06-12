@@ -24,10 +24,15 @@ import java.util.UUID;
 import static com.online.shop.clientservice.util.StringConstants.API_URL_V1;
 import static com.online.shop.clientservice.util.StringConstants.API_URL_V1_NO_SLASH;
 import static com.online.shop.clientservice.util.StringConstants.FULL_UPDATE_JSON;
+import static com.online.shop.clientservice.util.StringConstants.FULL_UPDATE_JSON_WITH_TAKEN_EMAIL;
+import static com.online.shop.clientservice.util.StringConstants.INVALID_FULL_UPDATE_JSON;
+import static com.online.shop.clientservice.util.StringConstants.INVALID_POST_JSON;
 import static com.online.shop.clientservice.util.StringConstants.INVALID_TYPE_ID;
 import static com.online.shop.clientservice.util.StringConstants.NON_EXISTENT_ID;
 import static com.online.shop.clientservice.util.StringConstants.PARTIAL_UPDATE_JSON;
+import static com.online.shop.clientservice.util.StringConstants.PARTIAL_UPDATE_JSON_WITH_TAKEN_EMAIL;
 import static com.online.shop.clientservice.util.StringConstants.POST_JSON;
+import static com.online.shop.clientservice.util.StringConstants.POST_JSON_WITH_TAKEN_EMAIL;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -135,11 +140,37 @@ public class ClientControllerTest {
         public void testThatPostClientReturnsHttpStatus201() {
             mockMvc.perform(post(API_URL_V1_NO_SLASH)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(POST_JSON))
+                            .content(POST_JSON))
                     .andExpect(jsonPath("$.name").value("John"))
                     .andExpect(jsonPath("$.surname").value("Smith"))
                     .andExpect(jsonPath("$.email").value("john.smith@email.com"))
                     .andExpect(status().isCreated());
+        }
+
+        @Test
+        @SneakyThrows
+        public void testThatPostClientRequestForTakenEmailReturnsHttpStatus409() {
+            mockMvc.perform(post(API_URL_V1_NO_SLASH)
+                    .contentType(MediaType.APPLICATION_JSON)
+                            .content(POST_JSON_WITH_TAKEN_EMAIL))
+                    .andExpect(jsonPath("$.title").value("Email already taken"))
+                    .andExpect(jsonPath("$.status").value(HttpStatus.CONFLICT.value()))
+                    .andExpect(jsonPath("$.instance").value(API_URL_V1_NO_SLASH))
+                    .andExpect(jsonPath("$.detail")
+                            .value(String.format("Email %s is already taken", client.getEmail())))
+                    .andExpect(status().isConflict());
+        }
+
+        @Test
+        @SneakyThrows
+        public void testThatPostClientRequestForBadRequestReturnsHttpStatus400() {
+            mockMvc.perform(post(API_URL_V1_NO_SLASH)
+                    .contentType(MediaType.APPLICATION_JSON)
+                            .content(INVALID_POST_JSON))
+                    .andExpect(jsonPath("$.title").value("Invalid JSON"))
+                    .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
+                    .andExpect(jsonPath("$.instance").value(API_URL_V1_NO_SLASH))
+                    .andExpect(status().isBadRequest());
         }
     }
 
@@ -160,6 +191,32 @@ public class ClientControllerTest {
                     .andExpect(status().isOk());
         }
 
+        @Test
+        @SneakyThrows
+        public void testThatPutClientRequestForTakenEmailReturnsHttpStatus409() {
+            mockMvc.perform(put(API_URL_V1 + client.getId())
+                    .contentType(MediaType.APPLICATION_JSON)
+                            .content(FULL_UPDATE_JSON_WITH_TAKEN_EMAIL))
+                    .andExpect(jsonPath("$.title").value("Email already taken"))
+                    .andExpect(jsonPath("$.status").value(HttpStatus.CONFLICT.value()))
+                    .andExpect(jsonPath("$.instance").value(API_URL_V1 + client.getId()))
+                    .andExpect(jsonPath("$.detail")
+                            .value(String.format("Email %s is already taken", client.getEmail())))
+                    .andExpect(status().isConflict());
+        }
+
+        @Test
+        @SneakyThrows
+        public void testThatPutClientRequestForBadRequestReturnsHttpStatus400() {
+            mockMvc.perform(put(API_URL_V1 + client.getId())
+                    .contentType(MediaType.APPLICATION_JSON)
+                            .content(INVALID_FULL_UPDATE_JSON))
+                    .andExpect(jsonPath("$.title").value("Invalid JSON"))
+                    .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
+                    .andExpect(jsonPath("$.instance").value(API_URL_V1 + client.getId()))
+                    .andExpect(status().isBadRequest());
+        }
+
     }
 
     @Nested
@@ -177,6 +234,20 @@ public class ClientControllerTest {
                     .andExpect(jsonPath("$.email").value("andrew.doe@email.com"))
                     .andExpect(jsonPath("$.created_at").value(client.getCreatedAt()))
                     .andExpect(status().isOk());
+        }
+
+        @Test
+        @SneakyThrows
+        public void testThatPatchClientRequestForTakenEmailReturnsHttpStatus409() {
+            mockMvc.perform(patch(API_URL_V1 + client.getId())
+                    .contentType(MediaType.APPLICATION_JSON)
+                            .content(PARTIAL_UPDATE_JSON_WITH_TAKEN_EMAIL))
+                    .andExpect(jsonPath("$.title").value("Email already taken"))
+                    .andExpect(jsonPath("$.status").value(HttpStatus.CONFLICT.value()))
+                    .andExpect(jsonPath("$.instance").value(API_URL_V1 + client.getId()))
+                    .andExpect(jsonPath("$.detail")
+                            .value(String.format("Email %s is already taken", client.getEmail())))
+                    .andExpect(status().isConflict());
         }
     }
 

@@ -26,6 +26,24 @@ public class StringConstants {
                         "address": "789 Oak Avenue Suite 101 Metropolis, NY 10001 USA"
                     }
             """;
+    public static final String POST_JSON_WITH_TAKEN_EMAIL =
+            """
+                    {
+                        "name": "John",
+                        "surname": "Doe",
+                        "email": "john.doe@email.com",
+                        "address": "1234 Elm Street Apt. 567 Springfield, IL 62701 USA"
+                    }
+            """;
+    public static final String INVALID_POST_JSON =
+            """
+                    {
+                        "surname": "Doe",
+                        "email": "john.doe@email.com",
+                        "address": "1234 Elm Street Apt. 567 Springfield, IL 62701 USA"
+                    }
+            """;
+
     public static final String FULL_UPDATE_JSON =
             """
                     {
@@ -35,11 +53,35 @@ public class StringConstants {
                         "address": "555 Pine Lane Unit 3B Pleasant-ville, CA 90210 USA"
                     }
             """;
+    public static final String INVALID_FULL_UPDATE_JSON =
+            """
+                    {
+                        "surname": "Carter",
+                        "email": "dan.carter@email.com",
+                        "address": "555 Pine Lane Unit 3B Pleasant-ville, CA 90210 USA"
+                    }
+            """;
+    public static final String FULL_UPDATE_JSON_WITH_TAKEN_EMAIL =
+            """
+                    {
+                        "name": "Dan",
+                        "surname": "Carter",
+                        "email": "john.doe@email.com",
+                        "address": "555 Pine Lane Unit 3B Pleasant-ville, CA 90210 USA"
+                    }
+            """;
+
     public static final String PARTIAL_UPDATE_JSON =
             """
                     {
                         "name": "Andrew",
                         "email": "andrew.doe@email.com"
+                    }
+            """;
+    public static final String PARTIAL_UPDATE_JSON_WITH_TAKEN_EMAIL =
+            """
+                    {
+                        "email": "john.doe@email.com"
                     }
             """;
 }
