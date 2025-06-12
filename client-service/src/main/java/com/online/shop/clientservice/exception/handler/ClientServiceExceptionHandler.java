@@ -5,6 +5,7 @@ import com.online.shop.clientservice.exception.throwable.EmailAlreadyTakenExcept
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -45,6 +46,17 @@ public class ClientServiceExceptionHandler {
         log.debug("Bad request {}", exception.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
         problemDetail.setTitle("Bad request");
+        problemDetail.setProperty("timestamp", Instant.now());
+        problemDetail.setType(URI.create("/api/v1/clients"));
+        return problemDetail;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ProblemDetail handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+        log.debug("Invalid JSON {}", exception.getMessage());
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        problemDetail.setTitle("Invalid JSON");
         problemDetail.setProperty("timestamp", Instant.now());
         problemDetail.setType(URI.create("/api/v1/clients"));
         return problemDetail;
