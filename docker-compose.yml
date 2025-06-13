@@ -14,6 +14,20 @@ services:
     volumes:
       - client-service-data:/var/lib/postgresql/client-service-data
 
+  item-service-database:
+    container_name: item-service-database
+    image: postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB_ITEM_SERVICE}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - 10001:5432
+    networks:
+      - online-shop-network
+    volumes:
+      - item-service-data:/var/lib/postgresql/item-service-data
+
   client-service:
     container_name: client-service
     build:
@@ -29,9 +43,25 @@ services:
     networks:
       - online-shop-network
 
+  item-service:
+    container_name: item-service
+    build:
+      context: item-service
+      dockerfile: Dockerfile
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB_ITEM_SERVICE}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - DATASOURCE_URL=${ITEM_SERVICE_DATASOURCE}
+    ports:
+      - 8181:8080
+    networks:
+      - online-shop-network
+
 networks:
   online-shop-network:
     driver: bridge
 
 volumes:
   client-service-data:
+  item-service-data:
