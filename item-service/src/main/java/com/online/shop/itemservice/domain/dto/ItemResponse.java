@@ -1,0 +1,36 @@
+package com.online.shop.itemservice.domain.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Column;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class ItemResponse {
+
+    private UUID id;
+
+    private String name;
+
+    private BigDecimal price;
+
+    private String manufacturer;
+
+    private String category;
+
+    @JsonProperty(value = "created_at")
+    private LocalDateTime createdAt;
+}
