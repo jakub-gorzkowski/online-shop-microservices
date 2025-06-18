@@ -97,4 +97,13 @@ public class ItemServiceImplementation implements ItemService {
         Item updatedItem = itemRepository.save(item);
         return ItemMapper.mapToDetailedResponse(updatedItem);
     }
+
+    /**
+     * @param id Item UUID
+     */
+    @Override
+    public void deleteClient(UUID id) {
+        itemRepository.deleteById(id);
+        log.info("Item with id {} has been deleted", id);
+    }
 }

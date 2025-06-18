@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -65,5 +66,11 @@ public class ItemController {
     ) {
         DetailedItemResponse updatedItem = itemService.partialUpdateItem(id, request);
         return new ResponseEntity<>(updatedItem, HttpStatus.OK);
+    }
+
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<Void> deleteItem(@PathVariable UUID id) {
+        itemService.deleteClient(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
