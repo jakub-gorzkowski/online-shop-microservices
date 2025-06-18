@@ -10,6 +10,6 @@ import java.util.UUID;
 public interface ItemService {
     Page<ItemResponse> readAllItems(Integer offset, Byte size);
     DetailedItemResponse readItem(UUID id);
-    ItemResponse saveItem(ItemRequest request);
+    DetailedItemResponse saveItem(ItemRequest request);
     DetailedItemResponse updateItem(UUID id, ItemRequest request);
 }

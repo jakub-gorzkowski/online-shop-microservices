@@ -53,12 +53,12 @@ public class ItemServiceImplementation implements ItemService {
      * @return Saved item
      */
     @Override
-    public ItemResponse saveItem(ItemRequest request) {
+    public DetailedItemResponse saveItem(ItemRequest request) {
         Item item = ItemMapper.mapFromRequest(request);
         item.setCreatedAt(LocalDateTime.now());
         Item savedItem = itemRepository.save(item);
         log.info("Saved {} under id {}", savedItem.getName(), savedItem.getId());
-        return ItemMapper.mapToResponse(savedItem);
+        return ItemMapper.mapToDetailedResponse(savedItem);
     }
 
     /**
