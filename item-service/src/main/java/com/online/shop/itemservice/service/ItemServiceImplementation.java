@@ -1,5 +1,6 @@
 package com.online.shop.itemservice.service;
 
+import com.online.shop.itemservice.domain.dto.DetailedItemResponse;
 import com.online.shop.itemservice.domain.dto.ItemRequest;
 import com.online.shop.itemservice.domain.dto.ItemResponse;
 import com.online.shop.itemservice.domain.entity.Item;
@@ -42,9 +43,9 @@ public class ItemServiceImplementation implements ItemService {
      */
     @Override
     @SneakyThrows
-    public ItemResponse readItem(UUID id) {
+    public DetailedItemResponse readItem(UUID id) {
         Item foundItem = itemRepository.findById(id).orElseThrow(ItemNotFoundException::new);
-        return ItemMapper.mapToResponse(foundItem);
+        return ItemMapper.mapToDetailedResponse(foundItem);
     }
 
     /**

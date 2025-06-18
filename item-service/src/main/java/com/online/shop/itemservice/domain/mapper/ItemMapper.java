@@ -1,5 +1,6 @@
 package com.online.shop.itemservice.domain.mapper;
 
+import com.online.shop.itemservice.domain.dto.DetailedItemResponse;
 import com.online.shop.itemservice.domain.dto.ItemRequest;
 import com.online.shop.itemservice.domain.dto.ItemResponse;
 import com.online.shop.itemservice.domain.entity.Item;
@@ -10,6 +11,18 @@ public class ItemMapper {
         return ItemResponse.builder()
                 .id(item.getId())
                 .name(item.getName())
+                .manufacturer(item.getManufacturer())
+                .category(item.getCategory())
+                .price(item.getPrice())
+                .createdAt(item.getCreatedAt())
+                .build();
+    }
+
+    public static DetailedItemResponse mapToDetailedResponse(Item item) {
+        return DetailedItemResponse.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
                 .manufacturer(item.getManufacturer())
                 .category(item.getCategory())
                 .price(item.getPrice())

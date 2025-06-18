@@ -1,5 +1,6 @@
 package com.online.shop.itemservice.controller;
 
+import com.online.shop.itemservice.domain.dto.DetailedItemResponse;
 import com.online.shop.itemservice.domain.dto.ItemRequest;
 import com.online.shop.itemservice.domain.dto.ItemResponse;
 import com.online.shop.itemservice.service.ItemService;
@@ -36,7 +37,7 @@ public class ItemController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<ItemResponse> getItem(@PathVariable UUID id) {
+    public ResponseEntity<DetailedItemResponse> getItem(@PathVariable UUID id) {
         return new ResponseEntity<>(itemService.readItem(id), HttpStatus.OK);
     }
 
