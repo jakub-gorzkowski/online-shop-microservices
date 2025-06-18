@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -74,6 +75,24 @@ public class ItemServiceImplementation implements ItemService {
         item.setPrice(request.getPrice());
         item.setManufacturer(request.getManufacturer());
         item.setCategory(request.getCategory().toUpperCase());
+
+        Item updatedItem = itemRepository.save(item);
+        return ItemMapper.mapToDetailedResponse(updatedItem);
+    }
+
+    /**
+     * @param id Item UUID
+     * @param request Request with partially updated item data
+     * @return Updated item
+     */
+    @Override
+    public DetailedItemResponse partialUpdateItem(UUID id, ItemRequest request) {
+        Item item = itemRepository.findById(id).orElseThrow(ItemNotFoundException::new);
+        Optional.ofNullable(request.getName()).ifPresent(item::setName);
+        Optional.ofNullable(request.getDescription()).ifPresent(item::setDescription);
+        Optional.ofNullable(request.getPrice()).ifPresent(item::setPrice);
+        Optional.ofNullable(item.getManufacturer()).ifPresent(item::setManufacturer);
+        Optional.ofNullable(request.getCategory()).ifPresent(category -> item.setCategory(category.toUpperCase()));
 
         Item updatedItem = itemRepository.save(item);
         return ItemMapper.mapToDetailedResponse(updatedItem);

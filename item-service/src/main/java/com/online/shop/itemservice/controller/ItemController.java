@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -54,6 +55,15 @@ public class ItemController {
             @RequestBody ItemRequest request
     ) {
         DetailedItemResponse updatedItem = itemService.updateItem(id, request);
+        return new ResponseEntity<>(updatedItem, HttpStatus.OK);
+    }
+
+    @PatchMapping(path = "/{id}")
+    public ResponseEntity<DetailedItemResponse> partialUpdateItem(
+            @PathVariable UUID id,
+            @RequestBody ItemRequest request
+    ) {
+        DetailedItemResponse updatedItem = itemService.partialUpdateItem(id, request);
         return new ResponseEntity<>(updatedItem, HttpStatus.OK);
     }
 }

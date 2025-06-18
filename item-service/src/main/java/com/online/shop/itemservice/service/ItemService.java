@@ -12,4 +12,5 @@ public interface ItemService {
     DetailedItemResponse readItem(UUID id);
     DetailedItemResponse saveItem(ItemRequest request);
     DetailedItemResponse updateItem(UUID id, ItemRequest request);
+    DetailedItemResponse partialUpdateItem(UUID id, ItemRequest request);
 }
