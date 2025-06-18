@@ -1,5 +1,6 @@
 package com.online.shop.itemservice.service;
 
+import com.online.shop.itemservice.domain.dto.ItemRequest;
 import com.online.shop.itemservice.domain.dto.ItemResponse;
 import com.online.shop.itemservice.domain.entity.Item;
 import com.online.shop.itemservice.domain.mapper.ItemMapper;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Slf4j
@@ -43,6 +45,19 @@ public class ItemServiceImplementation implements ItemService {
     public ItemResponse readItem(UUID id) {
         Item foundItem = itemRepository.findById(id).orElseThrow(ItemNotFoundException::new);
         return ItemMapper.mapToResponse(foundItem);
+    }
+
+    /**
+     * @param request Request with item data
+     * @return Saved item
+     */
+    @Override
+    public ItemResponse saveItem(ItemRequest request) {
+        Item item = ItemMapper.mapFromRequest(request);
+        item.setCreatedAt(LocalDateTime.now());
+        Item savedItem = itemRepository.save(item);
+        log.info("Saved {} under id {}", savedItem.getName(), savedItem.getId());
+        return ItemMapper.mapToResponse(savedItem);
     }
 
 

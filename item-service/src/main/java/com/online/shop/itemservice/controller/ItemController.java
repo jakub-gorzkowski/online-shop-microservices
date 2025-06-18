@@ -1,5 +1,6 @@
 package com.online.shop.itemservice.controller;
 
+import com.online.shop.itemservice.domain.dto.ItemRequest;
 import com.online.shop.itemservice.domain.dto.ItemResponse;
 import com.online.shop.itemservice.service.ItemService;
 import jakarta.validation.constraints.Max;
@@ -10,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,5 +38,11 @@ public class ItemController {
     @GetMapping(path = "/{id}")
     public ResponseEntity<ItemResponse> getItem(@PathVariable UUID id) {
         return new ResponseEntity<>(itemService.readItem(id), HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<ItemResponse> postItem(@RequestBody ItemRequest request) {
+        ItemResponse savedItem = itemService.saveItem(request);
+        return new ResponseEntity<>(savedItem, HttpStatus.CREATED);
     }
 }
