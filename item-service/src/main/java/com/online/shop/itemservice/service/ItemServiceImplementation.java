@@ -61,5 +61,21 @@ public class ItemServiceImplementation implements ItemService {
         return ItemMapper.mapToResponse(savedItem);
     }
 
+    /**
+     * @param id Item UUID
+     * @param request Request with updated item data
+     * @return Updated item
+     */
+    @Override
+    public DetailedItemResponse updateItem(UUID id, ItemRequest request) {
+        Item item = itemRepository.findById(id).orElseThrow(ItemNotFoundException::new);
+        item.setName(request.getName());
+        item.setDescription(request.getDescription());
+        item.setPrice(request.getPrice());
+        item.setManufacturer(request.getManufacturer());
+        item.setCategory(request.getCategory().toUpperCase());
 
+        Item updatedItem = itemRepository.save(item);
+        return ItemMapper.mapToDetailedResponse(updatedItem);
+    }
 }
